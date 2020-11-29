@@ -4,16 +4,16 @@ class LOF:
         self.proximity_matrix = []
         self.sort_array = []
         self.average_density = []
+        self.average_relative_density = []
 
     def euclidean_distance(self, a, b):
-        sum = 0
+        total = 0
 
         for a_, b_ in zip(a, b):
-            sum += (a_ - b_) ** 2
+            total += (a_ - b_) ** 2
 
-        sum = sum ** 0.5
-        sum = round(sum, 2)
-        return sum
+        total = total ** 0.5
+        return total
 
     def load_data(self, data):
         self.data = data
@@ -38,11 +38,22 @@ class LOF:
 
     def calculate_average_density(self, k):
         for row in self.sort_array:
-            sum = 0
+            total = 0
             for i in range(k):
-                sum += row[i][0]
-            average_density = k / sum
+                total += row[i][0]
+            average_density = k / total
             self.average_density.append(average_density)
+
+    def calculate_average_relative_density(self, k):
+        for i, row in enumerate(self.sort_array):
+            total = 0
+            for j in range(k):
+                index = row[j][1]
+                total += self.average_density[index]
+            total = total / 3 / self.average_density[i]
+            self.average_relative_density.append(total)
+
+
 
 
 if __name__ == '__main__':
@@ -65,4 +76,5 @@ if __name__ == '__main__':
     lof.calculate_proximity_matrix()
     lof.sort()
     lof.calculate_average_density(k)
-    print(lof.average_density)
+    lof.calculate_average_relative_density(k)
+    print(lof.average_relative_density)
