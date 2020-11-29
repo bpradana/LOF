@@ -2,6 +2,7 @@ class LOF:
     def __init__(self):
         self.data = []
         self.proximity_matrix = []
+        self.sort_array = []
 
     def euclidean_distance(self, a, b):
         sum = 0
@@ -28,6 +29,11 @@ class LOF:
             temp.clear()
             self.proximity_matrix.append(row)
 
+    def preprocess_sort_array(self):
+        for row in self.proximity_matrix:
+            temp = [[data, i] for i, data in enumerate(row)]
+            self.sort_array.append(temp)
+
 
 if __name__ == '__main__':
     data = [
@@ -46,4 +52,5 @@ if __name__ == '__main__':
     lof = LOF()
     lof.load_data(data)
     lof.calculate_proximity_matrix()
-    print(lof.proximity_matrix)
+    lof.preprocess_sort_array()
+    print(lof.sort_array)
