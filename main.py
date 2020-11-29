@@ -5,6 +5,7 @@ class LOF:
         self.sort_array = []
         self.average_density = []
         self.average_relative_density = []
+        self.anomaly = []
 
     def euclidean_distance(self, a, b):
         total = 0
@@ -53,6 +54,9 @@ class LOF:
             total = total / 3 / self.average_density[i]
             self.average_relative_density.append(total)
 
+    def find_anomaly(self, treshold):
+        self.anomaly = [[i, data] for i, data in enumerate(self.average_relative_density) if data > treshold]
+            
 
 
 
@@ -70,6 +74,7 @@ if __name__ == '__main__':
         [21, 75]
     ]
     k = 3
+    t = 5
 
     lof = LOF()
     lof.load_data(data)
@@ -77,4 +82,5 @@ if __name__ == '__main__':
     lof.sort()
     lof.calculate_average_density(k)
     lof.calculate_average_relative_density(k)
-    print(lof.average_relative_density)
+    lof.find_anomaly(t)
+    print(lof.anomaly)
