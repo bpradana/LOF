@@ -26,6 +26,7 @@ class LOF:
         for fp in data:
             for sp in data:
                 dist = self.euclidean_distance(fp, sp)
+                dist = round(dist, 2)
                 temp.append(dist)
             row = temp.copy()
             temp.clear()
@@ -57,7 +58,10 @@ class LOF:
     def find_anomaly(self, treshold):
         self.anomaly = [[i, data] for i, data in enumerate(self.average_relative_density) if data > treshold]
             
-
+    def print_data(self, data):
+        for i, row in enumerate(data):
+            print(i, row)
+        print('')
 
 
 if __name__ == '__main__':
@@ -83,4 +87,21 @@ if __name__ == '__main__':
     lof.calculate_average_density(k)
     lof.calculate_average_relative_density(k)
     lof.find_anomaly(t)
-    print(lof.anomaly)
+
+    print('=== DATA ===')
+    lof.print_data(lof.data)
+
+    print('=== PROXIMITY MATRIX ===')
+    lof.print_data(lof.proximity_matrix)
+
+    print('=== SORTED ARRAY ===')
+    lof.print_data(lof.sort_array)
+
+    print('=== AVERAGE DENSITY ===')
+    lof.print_data(lof.average_density)
+
+    print('=== AVERAGE RELATIVE DENSITY ===')
+    lof.print_data(lof.average_relative_density)
+
+    print('=== ANOMALIES ===')
+    lof.print_data(lof.anomaly)
