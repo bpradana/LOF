@@ -63,6 +63,14 @@ class LOF:
             print(i, row)
         print('')
 
+    def calculate_lof(self, k, treshold):
+        self.calculate_proximity_matrix()
+        self.sort()
+        self.calculate_average_density(k)
+        self.calculate_average_relative_density(k)
+        self.find_anomaly(treshold)
+
+
 
 if __name__ == '__main__':
     data = [
@@ -82,12 +90,8 @@ if __name__ == '__main__':
 
     lof = LOF()
     lof.load_data(data)
-    lof.calculate_proximity_matrix()
-    lof.sort()
-    lof.calculate_average_density(k)
-    lof.calculate_average_relative_density(k)
-    lof.find_anomaly(t)
-
+    lof.calculate_lof(k, t)
+    
     print('=== DATA ===')
     lof.print_data(lof.data)
 
