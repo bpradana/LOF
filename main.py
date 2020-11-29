@@ -29,9 +29,10 @@ class LOF:
             temp.clear()
             self.proximity_matrix.append(row)
 
-    def preprocess_sort_array(self):
+    def sort(self):
+        index = [i for i in range(10)]
         for row in self.proximity_matrix:
-            temp = [[data, i] for i, data in enumerate(row)]
+            temp = [[data, i] for data, i in sorted(zip(row, index)) if data != 0]
             self.sort_array.append(temp)
 
 
@@ -52,5 +53,5 @@ if __name__ == '__main__':
     lof = LOF()
     lof.load_data(data)
     lof.calculate_proximity_matrix()
-    lof.preprocess_sort_array()
+    lof.sort()
     print(lof.sort_array)
