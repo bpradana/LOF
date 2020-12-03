@@ -67,7 +67,7 @@ class LOF:
         self.anomaly['index'] = [index for index, data in enumerate(self.average_relative_density) if data > treshold]
         self.anomaly['coord'] = [point for data, point in zip(self.average_relative_density, self.data) if data > treshold]
         self.anomaly['value'] = [value for value in self.average_relative_density if value > treshold]
-            
+
     def print_data(self, data):
         for i, row in enumerate(data):
             print(i, row)
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     lof = LOF()
     lof.load_data(data)
     lof.calculate_lof(k, t)
-    
+
     print('=== DATA ===')
     lof.print_data(lof.data)
 
