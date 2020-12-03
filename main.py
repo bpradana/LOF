@@ -1,3 +1,7 @@
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
 class LOF:
     def __init__(self):
         self.data = []
@@ -5,7 +9,11 @@ class LOF:
         self.sort_array = []
         self.average_density = []
         self.average_relative_density = []
-        self.anomaly = []
+        self.anomaly = {
+            'index': [],
+            'coord': [],
+            'value': []
+        }
 
     def euclidean_distance(self, a, b):
         total = 0
@@ -56,7 +64,9 @@ class LOF:
             self.average_relative_density.append(total)
 
     def find_anomaly(self, treshold):
-        self.anomaly = [[i, data] for i, data in enumerate(self.average_relative_density) if data > treshold]
+        self.anomaly['index'] = [index for index, data in enumerate(self.average_relative_density) if data > treshold]
+        self.anomaly['coord'] = [point for data, point in zip(self.average_relative_density, self.data) if data > treshold]
+        self.anomaly['value'] = [value for value in self.average_relative_density if value > treshold]
             
     def print_data(self, data):
         for i, row in enumerate(data):
@@ -73,20 +83,12 @@ class LOF:
 
 
 if __name__ == '__main__':
-    data = [
-        [26, 35],
-        [13, 12],
-        [11, 5],
-        [10, 15],
-        [50, 45],
-        [200, 200],
-        [18, 20],
-        [21, 14],
-        [16, 20],
-        [21, 75]
-    ]
+    file = 'data.csv'
     k = 3
     t = 5
+
+    df = pd.read_csv(file, delimiter=',')
+    data = [list(data) for data in df.values]
 
     lof = LOF()
     lof.load_data(data)
@@ -108,4 +110,15 @@ if __name__ == '__main__':
     lof.print_data(lof.average_relative_density)
 
     print('=== ANOMALIES ===')
-    lof.print_data(lof.anomaly)
+    lof.print_data(zip(lof.anomaly['index'], lof.anomaly['coord'], lof.anomaly['value']))
+
+    normal_point_x = [point[0] for point in lof.data if point not in lof.anomaly['coord']]
+    normal_point_y = [point[1] for point in lof.data if point not in lof.anomaly['coord']]
+    anom_point_x = [point[0] for point in lof.anomaly['coord']]
+    anom_point_y = [point[1] for point in lof.anomaly['coord']]
+
+    plt.scatter(normal_point_x, normal_point_y)
+    plt.scatter(anom_point_x, anom_point_y, c='red')
+    plt.legend(['normal', 'anomaly'])
+
+    plt.show()
