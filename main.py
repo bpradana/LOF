@@ -9,7 +9,7 @@ class LOF:
         self.sort_array = []
         self.average_density = []
         self.average_relative_density = []
-        self.anomaly = {
+        self.outlier = {
             'index': [],
             'coord': [],
             'value': []
@@ -60,13 +60,13 @@ class LOF:
             for j in range(k):
                 index = row[j][1]
                 total += self.average_density[index]
-            total = total / 3 / self.average_density[i]
+            total = total / k / self.average_density[i]
             self.average_relative_density.append(total)
 
-    def find_anomaly(self, treshold):
-        self.anomaly['index'] = [index for index, data in enumerate(self.average_relative_density) if data > treshold]
-        self.anomaly['coord'] = [point for data, point in zip(self.average_relative_density, self.data) if data > treshold]
-        self.anomaly['value'] = [value for value in self.average_relative_density if value > treshold]
+    def find_outlier(self, treshold):
+        self.outlier['index'] = [index for index, data in enumerate(self.average_relative_density) if data > treshold]
+        self.outlier['coord'] = [point for data, point in zip(self.average_relative_density, self.data) if data > treshold]
+        self.outlier['value'] = [value for value in self.average_relative_density if value > treshold]
 
     def print_data(self, data):
         for i, row in enumerate(data):
@@ -78,7 +78,7 @@ class LOF:
         self.sort()
         self.calculate_average_density(k)
         self.calculate_average_relative_density(k)
-        self.find_anomaly(treshold)
+        self.find_outlier(treshold)
 
 
 
@@ -86,6 +86,7 @@ if __name__ == '__main__':
     file = 'data.csv'
     k = 3
     t = 5
+
 
     df = pd.read_csv(file, delimiter=',')
     data = [list(data) for data in df.values]
@@ -109,16 +110,18 @@ if __name__ == '__main__':
     print('=== AVERAGE RELATIVE DENSITY ===')
     lof.print_data(lof.average_relative_density)
 
-    print('=== ANOMALIES ===')
-    lof.print_data(zip(lof.anomaly['index'], lof.anomaly['coord'], lof.anomaly['value']))
+    print('=== OUTLIERS ===')
+    lof.print_data(zip(lof.outlier['index'], lof.outlier['coord'], lof.outlier['value']))
 
-    normal_point_x = [point[0] for point in lof.data if point not in lof.anomaly['coord']]
-    normal_point_y = [point[1] for point in lof.data if point not in lof.anomaly['coord']]
-    anom_point_x = [point[0] for point in lof.anomaly['coord']]
-    anom_point_y = [point[1] for point in lof.anomaly['coord']]
+
+    normal_point_x = [point[0] for point in lof.data if point not in lof.outlier['coord']]
+    normal_point_y = [point[1] for point in lof.data if point not in lof.outlier['coord']]
+    outlier_point_x = [point[0] for point in lof.outlier['coord']]
+    outlier_point_y = [point[1] for point in lof.outlier['coord']]
 
     plt.scatter(normal_point_x, normal_point_y)
-    plt.scatter(anom_point_x, anom_point_y, c='red')
-    plt.legend(['normal', 'anomaly'])
+    plt.scatter(outlier_point_x, outlier_point_y, c='red')
+    plt.legend(['normal', 'outlier'])
+    plt.title('Outlier')
 
     plt.show()
